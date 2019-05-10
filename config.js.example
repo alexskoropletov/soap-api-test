@@ -1,0 +1,3 @@
+module.exports = Object.freeze({
+  url: 'http://localhost/soap/api.php?wsdl',
+});
