@@ -35,6 +35,22 @@ const parseResponse = (response) => {
   dumpLineBreak();
 };
 
+const parseAvailableFunctions = (response) => {
+  const list = response[0].return.item;
+  console.log(util.inspect(
+    list.map(item => ({
+      title: item.title['$value'],
+      module: item.module['$value'],
+      func: item.func['$value'],
+      documenttype: item.documenttype['$value'],
+    })),
+    false,
+    null,
+    true
+  ));
+  dumpLineBreak();
+};
+
 const doStuff = async () => {
   try {
 
@@ -49,12 +65,24 @@ const doStuff = async () => {
       user: 'Alice',
       pass: 'Cooper321',
     });
-    parseResponse(login);
+    // parseResponse(login);
+    const sessionId = login[0].return.sessionid['$value'];
+    console.log('[!] ', { sessionId });
 
-    // const version = await client.getVersionAsync(null);
-    //
-    // console.log({ version[0] });
+    const availableFunctionsList = await client.getAvailableFunctionsAsync({ sessionId });
+    parseAvailableFunctions(availableFunctionsList);
 
+    const currencyInfo = await client.getCurrencyInfoAsync({ sessionId });
+    parseResponse(currencyInfo);
+
+    const accounts = await client.getAccountsAsync({ sessionId });
+    parseResponse(accounts);
+
+    const balance = await client.getBalanceAsync({ sessionId });
+    parseResponse(balance);
+
+    const balances = await client.getBalancesAsync({ sessionId });
+    parseResponse(balances);
   } catch (e) {
     console.error(e);
   }
